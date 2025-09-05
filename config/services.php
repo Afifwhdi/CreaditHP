@@ -14,6 +14,11 @@ return [
     |
     */
 
+    // setings api whatsapp nest
+    'nest' => [
+        'base_url'=>env('NEST_API_BASE_URL'),
+        'api_key'=>env('NEST_API_KEY')],
+        
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
