@@ -15,9 +15,29 @@ class Customer extends Model
         'national_id',
         'address',
         'ktp_path',
+        'status',
         'employment',
         'monthly_income',
     ];
+
+    public function refreshStatus(): void
+    {
+        if ($this->status === 'blacklist') {
+            return; 
+        }
+
+        $total = $this->installments()->count();
+        $paid  = $this->installments()->whereNotNull('paid_at')->count();
+
+        if ($total > 0 && $total === $paid) {
+            $this->status = 'lunas';
+        } else {
+            $this->status = 'active';
+        }
+
+        $this->save();
+    }
+
 
     /** @var array<string,string> */
     protected $casts = [

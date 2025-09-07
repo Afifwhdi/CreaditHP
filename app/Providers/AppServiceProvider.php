@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Credit;
 use Illuminate\Support\ServiceProvider;
 use App\Contracts\WhatsAppGateway;
 use App\Services\NestWhatsAppGateway;
+use App\Observers\CreditObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        
+        Credit::observe(CreditObserver::class);
     }
 }

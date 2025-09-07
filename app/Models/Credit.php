@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Credit extends Model
 {
-    /** @var array<int,string> */
+
+    protected $appends = ['paid_count','remaining_count','total_paid','total_remaining'];
+
     protected $fillable = [
         'customer_id',
-        'phone_id',
+        'phone_name',
         'contract_date',
         'price',
         'down_payment',
@@ -21,58 +23,50 @@ class Credit extends Model
         'first_due_date',
         'status',
         'notes',
-
-        // parameter perhitungan
-        'interest_rate_year',
-        'admin_fee',
-        'insurance_fee',
-        'other_fee',
-        'commission_fee',
-
-        // hasil perhitungan (disimpan)
         'principal',
-        'monthly_interest',
         'installment_amount',
-        'total_interest',
         'total_payable',
-        'expected_profit',
     ];
 
-    /** @var array<string,string> */
     protected $casts = [
-        'contract_date'       => 'date',
-        'first_due_date'      => 'date',
-        'status'              => CreditStatus::class,
-
-        'price'               => 'decimal:2',
-        'down_payment'        => 'decimal:2',
-        'interest_rate_year'  => 'decimal:2',
-        'admin_fee'           => 'decimal:2',
-        'insurance_fee'       => 'decimal:2',
-        'other_fee'           => 'decimal:2',
-        'commission_fee'      => 'decimal:2',
-
-        'principal'           => 'decimal:2',
-        'monthly_interest'    => 'decimal:2',
-        'installment_amount'  => 'decimal:2',
-        'total_interest'      => 'decimal:2',
-        'total_payable'       => 'decimal:2',
-        'expected_profit'     => 'decimal:2',
+        'contract_date'      => 'date',
+        'first_due_date'     => 'date',
+        'status'             => CreditStatus::class,
+        'price'              => 'decimal:2',
+        'down_payment'       => 'decimal:2',
+        'principal'          => 'decimal:2',
+        'installment_amount' => 'decimal:2',
+        'total_payable'      => 'decimal:2',
     ];
 
-    // Relasi
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
-    }
-
-    public function phone(): BelongsTo
-    {
-        return $this->belongsTo(Phone::class);
     }
 
     public function installments(): HasMany
     {
         return $this->hasMany(Installment::class);
     }
+
+    public function getPaidCountAttribute(): int
+    {
+        return $this->installments()->where('status','paid')->count();
+    }
+
+    public function getRemainingCountAttribute(): int
+    {
+        return max(0, (int) $this->tenor - $this->paid_count);
+    }
+
+    public function getTotalPaidAttribute(): float
+    {
+        return (float) $this->installments()->where('status','paid')->sum('amount');
+    }
+
+    public function getTotalRemainingAttribute(): float
+    {
+        return max(0.0, (float) $this->total_payable - $this->total_paid);
+    }
+
 }

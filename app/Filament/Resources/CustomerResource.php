@@ -58,6 +58,16 @@ class CustomerResource extends Resource
                         ->maxSize(5 * 1024)             
                         ->helperText('JPG/PNG maksimal 5MB')
                         ->columnSpanFull(),
+
+                    Forms\Components\Select::make('status')
+                        ->label('Status')
+                        ->options([
+                            'active'    => 'Aktif',
+                            'lunas'     => 'Lunas',
+                            'blacklist' => 'Blacklist',
+                        ])
+                        ->default('active')
+                        ->required(),
                 ])
                 ->columns(2),
         ]);

@@ -3,7 +3,6 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Customer;
-use App\Models\Phone;
 use App\Models\Credit;
 use App\Models\Installment;
 use App\Models\Payment;
@@ -15,7 +14,6 @@ class ExtraStats extends BaseWidget
     protected function getStats(): array
     {
         $totalCustomers = Customer::count();
-        $totalStock     = (int) Phone::sum('stock');
         $nilaiKredit    = (float) Credit::where('status', 'active')->sum('price');
         $angsPending    = (int) Installment::where('status', 'pending')->count();
         $pembayaranBln  = (float) Payment::whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->sum('amount');
@@ -25,11 +23,6 @@ class ExtraStats extends BaseWidget
                 ->description('Semua pelanggan terdaftar')
                 ->icon('heroicon-o-user-group')
                 ->color('primary'),
-
-            // Stat::make('Stok HP Tersedia', $totalStock)
-            //     ->description('Unit di gudang')
-            //     ->icon('heroicon-o-device-phone-mobile')
-            //     ->color('info'),
 
             Stat::make('Nilai Kredit Berjalan', 'Rp' . number_format($nilaiKredit, 0, ',', '.'))
                 ->description('Total kontrak aktif')

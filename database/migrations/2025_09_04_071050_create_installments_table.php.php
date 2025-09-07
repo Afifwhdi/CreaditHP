@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->string('status')->default('pending'); 
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();
-
             $table->unique(['credit_id', 'installment_no']);
             $table->index(['due_date', 'status']);
         });

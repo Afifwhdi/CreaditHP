@@ -1,15 +1,20 @@
-@php($c = $calc ?? null)
-@if($c)
-    <div class="grid md:grid-cols-3 gap-4">
-        <x-filament::section heading="Ringkasan">
-            <dl class="text-sm space-y-1">
-                <div><dt class="font-medium">Pokok (Price - DP)</dt><dd>Rp{{ number_format($c['principal'],0,',','.') }}</dd></div>
-                <div><dt class="font-medium">Bunga/bln (flat)</dt><dd>Rp{{ number_format($c['monthly_interest'],0,',','.') }}</dd></div>
-                <div><dt class="font-medium">Cicilan/bln</dt><dd class="text-lg font-semibold">Rp{{ number_format($c['installment'],0,',','.') }}</dd></div>
-                <div><dt class="font-medium">Total Bunga</dt><dd>Rp{{ number_format($c['total_interest'],0,',','.') }}</dd></div>
-                <div><dt class="font-medium">Total Dibayar</dt><dd>Rp{{ number_format($c['total_payable'],0,',','.') }}</dd></div>
-                <div><dt class="font-medium">Estimasi Profit</dt><dd class="text-green-600 font-semibold">Rp{{ number_format($c['expected_profit'],0,',','.') }}</dd></div>
-            </dl>
-        </x-filament::section>
+<div class="space-y-2">
+    <div class="grid grid-cols-2 gap-2">
+        <div>Pokok (Principal)</div>
+        <div class="text-right font-semibold">Rp {{ number_format($calc['principal'] ?? 0, 0, ',', '.') }}</div>
+
+        <div>Cicilan / Bulan</div>
+        <div class="text-right">Rp {{ number_format($calc['installment'] ?? 0, 0, ',', '.') }}</div>
+
+        <div>Total Cicilan ({{ request()->get('tenor') ?? '' }} bln)</div>
+        <div class="text-right">Rp {{ number_format($calc['total_installments'] ?? 0, 0, ',', '.') }}</div>
+
+        <div>Total Bayar (DP + semua cicilan)</div>
+        <div class="text-right">Rp {{ number_format($calc['total_payable'] ?? 0, 0, ',', '.') }}</div>
+
+        <div class="font-semibold text-green-600">Estimasi Profit</div>
+        <div class="text-right font-semibold text-green-600">
+            Rp {{ number_format($calc['expected_profit'] ?? 0, 0, ',', '.') }}
+        </div>
     </div>
-@endif
+</div>
